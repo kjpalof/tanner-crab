@@ -24,4 +24,7 @@ logbook <- read_excel(path = "./data/TannerLogbookData_2017.xlsx", sheet = 1)
 
 ## logbook data by day of year
 
+# need to add survey area 3 designation - see "All logbook data_17" spreadsheet
+# need to convery effort date to day of year
+
 logbook %>% (Year = YEAR, effort.date = EFFORT_DATE)
