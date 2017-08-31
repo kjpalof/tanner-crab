@@ -21,3 +21,7 @@ theme_set(theme_bw(base_size=12,base_family='Times New Roman')+
 #Load data ----------------
 fishtkt <- read_excel(path = "./data/TannerFishTicketData_2017.xlsx", sheet = 1)
 logbook <- read_excel(path = "./data/TannerLogbookData_2017.xlsx", sheet = 1)
+
+## logbook data by day of year
+
+logbook %>% (Year = YEAR, effort.date = EFFORT_DATE)
