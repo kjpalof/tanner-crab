@@ -27,4 +27,9 @@ logbook <- read_excel(path = "./data/TannerLogbookData_2017.xlsx", sheet = 1)
 # need to add survey area 3 designation - see "All logbook data_17" spreadsheet
 # need to convery effort date to day of year
 
-logbook %>% (Year = YEAR, effort.date = EFFORT_DATE)
+logbook %>% select(Year = YEAR, effort.date = EFFORT_DATE, District = DISTRICT, 
+                   Sub.district = SUB_DISTRICT, ADFG_NO, pots = NUMBER_POTS_LIFTED, 
+                   numbers = TARGET_SPECIES_RETAINED) -> logbook1 
+
+logbook1 %>% mutate(day = strftime(effort.date, format = "%j")) 
+
