@@ -35,11 +35,14 @@ logbook_all %>% select(Year = YEAR, effort.date = EFFORT_DATE, District = DISTRI
 logbook_all1 %>% mutate(day = strftime(effort.date, format = "%j")) %>% 
   mutate(stat.area = paste(District,"-", Sub.district)) -> logbook_all1
 # add survey area 3 designation
-logbook1 %>% left_join(statarea) -> logbook2
+logbook_all1 %>% left_join(statarea) -> logbook_all2
 
 ### std cpue -----------------
 ## determine cumulative pots ordered by day
-logbook2 %>% arrange(day) %>% mutate(cum.pots = cumsum(pots)) -> logbook2
+logbook_all2 %>% 
+  group_by(Year) %>% 
+  arrange(day) %>% 
+  mutate(cum.pots = cumsum(pots)) -> logbook_all2 # not doing this by year.....hmm... start here.
 
 logbook2 %>% filter(cum.pots <= 12521) %>% mutate(cpue = numbers/pots) -> logbook2.std
 
