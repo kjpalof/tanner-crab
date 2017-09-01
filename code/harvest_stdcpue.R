@@ -22,8 +22,8 @@ theme_set(theme_bw(base_size=12,base_family='Times New Roman')+
 fishtkt <- read_excel(path = "./data/TannerFishTicketData_2017.xlsx", sheet = 1)
 logbook <- read_excel(path = "./data/TannerLogbookData_2017.xlsx", sheet = 1)
 statarea <- read.csv("./data/area_stat_areas.csv")
-logbook_all <- read_excel(path = "./data/All_logbook_data_17.xls", sheet = 4)
-## logbook data by day of year
+logbook_all <- read_excel(path = "./data/All_logbook_data_17.xls", sheet = 4) # from ALEX not in OCEAN AK
+
 
 ## data manipulation -------
 # need to add survey area 3 designation - see "All logbook data_17" spreadsheet
