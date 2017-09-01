@@ -36,7 +36,14 @@ logbook1 %>% mutate(day = strftime(effort.date, format = "%j")) %>%
 # add survey area 3 designation
 logbook1 %>% left_join(statarea) -> logbook2
 
+### std cpue -----------------
 ## determine cumulative pots ordered by day
 logbook2 %>% arrange(day) %>% mutate(cum.pots = cumsum(pots)) -> logbook2
 
-logbook2 %>% filter(cum.pots <= 12521) -> logbook2.std
+logbook2 %>% filter(cum.pots <= 12521) %>% mutate(cpue = numbers/pots) -> logbook2.std
+
+logbook2.std %>% group_by(Year) %>% summarise(avg.cpue = mean(cpue), 
+                                              se = sd(cpue)/sqrt(length(cpue)))
+
+
+
