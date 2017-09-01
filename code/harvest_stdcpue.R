@@ -28,12 +28,12 @@ logbook_all <- read_excel(path = "./data/All_logbook_data_17.xls", sheet = 4) # 
 ## data manipulation -------
 # need to add survey area 3 designation - see "All logbook data_17" spreadsheet
 # need to convery effort date to day of year
-logbook %>% select(Year = YEAR, effort.date = EFFORT_DATE, District = DISTRICT, 
+logbook_all %>% select(Year = YEAR, effort.date = EFFORT_DATE, District = DISTRICT, 
                    Sub.district = SUB_DISTRICT, ADFG_NO, pots = NUMBER_POTS_LIFTED, 
-                   numbers = TARGET_SPECIES_RETAINED) -> logbook1 
+                   numbers = TARGET_SPECIES_RETAINED) -> logbook_all1 
 
-logbook1 %>% mutate(day = strftime(effort.date, format = "%j")) %>% 
-  mutate(stat.area = paste(District,"-", Sub.district)) -> logbook1
+logbook_all1 %>% mutate(day = strftime(effort.date, format = "%j")) %>% 
+  mutate(stat.area = paste(District,"-", Sub.district)) -> logbook_all1
 # add survey area 3 designation
 logbook1 %>% left_join(statarea) -> logbook2
 
