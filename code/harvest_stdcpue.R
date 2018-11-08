@@ -65,14 +65,16 @@ logbook_all1 %>%
 ### std cpue -----------------
 ## determine cumulative pots ordered by day
 logbook_all1 %>% 
-  group_by(Year) %>% 
   arrange(day) %>% 
-  mutate(cum.pots = cumsum(pots)) -> logbook_all2 # not doing this by year.....hmm... start here.
+  group_by(Year) %>% 
+  #arrange(day) %>% 
+  mutate(cum.pots = cumsum(pots), cpue = numbers/pots) %>% 
+  filter(cum.pots <= 12521) %>% 
+  summarise(avg.cpue = mean(cpue, na.rm = TRUE), 
+            se = sd(cpue, na.rm = TRUE)/sqrt(length(cpue))) %>% 
+  as.data.frame()  
 
-logbook2 %>% filter(cum.pots <= 12521) %>% mutate(cpue = numbers/pots) -> logbook2.std
 
-logbook2.std %>% group_by(Year) %>% summarise(avg.cpue = mean(cpue), 
-                                              se = sd(cpue)/sqrt(length(cpue)))
 
 
 
