@@ -40,6 +40,7 @@ logbook1 %>%
 
 # std cpue current year -------
 logbook1 %>% 
+  arrange(day) %>% 
   group_by(Year) %>% 
   arrange(day) %>% 
   mutate(cum.pots = cumsum(pots), cpue = numbers/pots) %>% 
@@ -67,12 +68,13 @@ logbook_all1 %>%
 logbook_all1 %>% 
   arrange(day) %>% 
   group_by(Year) %>% 
-  #arrange(day) %>% 
+  arrange(day) %>% 
   mutate(cum.pots = cumsum(pots), cpue = numbers/pots) %>% 
   filter(cum.pots <= 12521) %>% 
   summarise(avg.cpue = mean(cpue, na.rm = TRUE), 
             se = sd(cpue, na.rm = TRUE)/sqrt(length(cpue))) %>% 
-  as.data.frame()  
+  as.data.frame() %>% 
+  write_csv('./results/std_commericial_cpue.csv')
 
 
 
