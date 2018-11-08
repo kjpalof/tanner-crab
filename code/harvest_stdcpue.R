@@ -1,9 +1,10 @@
-# K.Palof   8-31-17
+# K.Palof   11-8-18
 # calculationg of annual harvest and STD cpue for tanner crab fishery
 # Year: 2017-2018
 # results are currently graphed in: sigma plot 'Tanner SEAK Standardized CPUE_2017.JNB'
+# Move results to being graphed here.
 
-# Objective: harvest and std cpue for tanner crab 2017/2018
+# Objective: harvest and std cpue for tanner crab current season
 
 # Load packages -------------
 library(tidyverse)
@@ -19,27 +20,51 @@ theme_set(theme_bw(base_size=12,base_family='Times New Roman')+
             theme(panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank()))
 #Load data ----------------
-fishtkt <- read_excel(path = "./data/TannerFishTicketData_2017.xlsx", sheet = 1)
-logbook <- read_excel(path = "./data/TannerLogbookData_2017.xlsx", sheet = 1)
+fishtkt <- read.csv("./data/Tanner_Detailed Fish Tickets_85_18.csv")
+#logbook <- read_excel(path = "./data/TannerLogbookData_2017.xlsx", sheet = 1)
+logbook <- read_excel(path = "./data/2018 Tanner Logbook Data.xlsx", sheet = "AlexData")
 statarea <- read.csv("./data/area_stat_areas.csv")
-logbook_all <- read_excel(path = "./data/All_logbook_data_17.xls", sheet = 4) # from ALEX not in OCEAN AK
-
+logbook_all <- read_excel(path = "./data/All_logbook_data_17.xlsx", sheet = "r_input") # from ALEX not in OCEAN AK
+cur_yr = 2018
 
 ## data manipulation -------
-# need to add survey area 3 designation - see "All logbook data_17" spreadsheet
+
+## current year ---------
+logbook %>% select(Year = YEAR, effort.date = EFFORT_DATE, District = DISTRICT, 
+                   Sub.district = SUB_DISTRICT, ADFG_NO, pots = NUMBER_POTS_LIFTED, 
+                   numbers = TARGET_SPECIES_RETAINED) %>% 
+  as.data.frame() -> logbook1 
+
+logbook1 %>% 
+  mutate(day = strftime(effort.date, format = "%j")) -> logbook1
+
+# std cpue current year -------
+logbook1 %>% 
+  group_by(Year) %>% 
+  arrange(day) %>% 
+  mutate(cum.pots = cumsum(pots), cpue = numbers/pots) %>% 
+  filter(cum.pots <= 12521) %>% 
+  summarise(avg.cpue = mean(cpue), 
+            se = sd(cpue)/sqrt(length(cpue)))
+
+
+## all years -------------
+# add current years data 
+logbook_all %>% 
+  bind_rows(logbook) -> logbook_all
+
 # need to convery effort date to day of year
 logbook_all %>% select(Year = YEAR, effort.date = EFFORT_DATE, District = DISTRICT, 
                    Sub.district = SUB_DISTRICT, ADFG_NO, pots = NUMBER_POTS_LIFTED, 
-                   numbers = TARGET_SPECIES_RETAINED) -> logbook_all1 
+                   numbers = TARGET_SPECIES_RETAINED) %>% 
+  as.data.frame() -> logbook_all1 
 
-logbook_all1 %>% mutate(day = strftime(effort.date, format = "%j")) %>% 
-  mutate(stat.area = paste(District,"-", Sub.district)) -> logbook_all1
-# add survey area 3 designation
-logbook_all1 %>% left_join(statarea) -> logbook_all2
+logbook_all1 %>% 
+  mutate(day = strftime(effort.date, format = "%j")) -> logbook_all1
 
 ### std cpue -----------------
 ## determine cumulative pots ordered by day
-logbook_all2 %>% 
+logbook_all1 %>% 
   group_by(Year) %>% 
   arrange(day) %>% 
   mutate(cum.pots = cumsum(pots)) -> logbook_all2 # not doing this by year.....hmm... start here.
