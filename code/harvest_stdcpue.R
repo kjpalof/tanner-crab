@@ -1,7 +1,7 @@
-# K.Palof   11-8-18 / 11-5-19 / 11-15-20
+# K.Palof   11-8-18 / 11-5-19 / 11-15-20 / 11-8-21
 
 # calculationg of annual harvest and STD cpue for tanner crab fishery
-# Year: 2020 - 2021
+# Year: 2021 - 2022
 # result were previously graphed in: sigma plot 'Tanner SEAK Standardized CPUE_2017.JNB'
 
 # these results are used to create figures in SE_crab_assessments - more here **FIX**
@@ -23,19 +23,25 @@ theme_set(theme_bw(base_size=12,base_family='Times New Roman')+
                   panel.grid.minor = element_blank()))
 
 # global -----
-cur_yr = 2020
+cur_yr = 2021 # update annually 
 
 #Load data ----------------
 fishtkt <- read.csv(paste0('./data/Tanner_Detailed Fish Tickets_ALL_years_', cur_yr,'.csv'))
+# pull from Ocean AK 
 #logbook <- read_excel(path = "./data/TannerLogbookData_2017.xlsx", sheet = 1)
-logbook <- read_excel(path = paste0('./data/', cur_yr,' Tanner Logbook Data.xlsx'), sheet = "AlexData")
+
+# moved to OceanAK ???? in 2021 therefore just have .csv with 2021 output. This will change in the future
+logbook <- read_excel(path = paste0('./data/Tanner crab_Invertebrate Logbook Data_', cur_yr, '.xlsx'), sheet = "AlexData")
 statarea <- read.csv("./data/area_stat_areas.csv")
 logbook_all <- read_excel(path = "./data/All_logbook_tanner.xlsx", sheet = "AlexData") # from ALEX not in OCEAN AK
+# only goes to 2019
 
 ## data manipulation -------
 
 ## current year ---------
-logbook %>% select(Year = YEAR, effort.date = EFFORT_DATE, District = DISTRICT, 
+logbook %>% 
+  filter(YEAR >= 2020) %>% 
+  select(Year = YEAR, effort.date = EFFORT_DATE, District = DISTRICT, 
                    Sub.district = SUB_DISTRICT, ADFG_NO, pots = NUMBER_POTS_LIFTED, 
                    numbers = TARGET_SPECIES_RETAINED) %>% 
   as.data.frame() -> logbook1 
@@ -45,6 +51,7 @@ logbook1 %>%
 
 # std cpue current year -------
 logbook1 %>% 
+  filter(pots > 0) %>% 
   arrange(day) %>% 
   group_by(Year) %>% 
   arrange(day) %>% 
@@ -59,7 +66,7 @@ logbook1 %>%
 #logbook_all %>% 
 #  bind_rows(logbook) -> logbook_all
 
-# need to convery effort date to day of year
+# need to convert effort date to day of year
 logbook_all %>% select(Year = YEAR, effort.date = EFFORT_DATE, District = DISTRICT, 
                    Sub.district = SUB_DISTRICT, ADFG_NO, pots = NUMBER_POTS_LIFTED, 
                    numbers = TARGET_SPECIES_RETAINED) %>% 
@@ -74,6 +81,7 @@ logbook_all1 %>%
 ### std cpue -----------------
 ## determine cumulative pots ordered by day
 logbook_all_cur %>% 
+  filter(pots >0) %>% 
   arrange(day) %>% 
   group_by(Year) %>% 
   arrange(day) %>% 
