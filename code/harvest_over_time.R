@@ -1,5 +1,6 @@
 # K.Palof
-# 12-6-18
+# 12-6-18 / 11-15-20
+
 
 # Look at Tanner crab harvest over time in each managment area.
 # Total pounds and percentage of mature biomass in that area.
@@ -10,6 +11,7 @@
 
 # load ----
 source('./code/helper.R')
+cur_yr = 2020
 
 
 # data ----
