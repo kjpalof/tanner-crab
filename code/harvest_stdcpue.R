@@ -1,7 +1,7 @@
-# K.Palof   11-8-18 / 11-5-19 / 11-15-20 / 11-8-21
+# K.Palof   11-8-18 / 11-5-19 / 11-15-20 / 11-8-21 / 11-7-22
 
 # calculationg of annual harvest and STD cpue for tanner crab fishery
-# Year: 2021 - 2022
+# Year: 2022 - 2023
 # result were previously graphed in: sigma plot 'Tanner SEAK Standardized CPUE_2017.JNB'
 
 # these results are used to create figures in SE_crab_assessments - more here **FIX**
@@ -23,7 +23,7 @@ theme_set(theme_bw(base_size=12,base_family='Times New Roman')+
                   panel.grid.minor = element_blank()))
 
 # global -----
-cur_yr = 2021 # update annually 
+cur_yr = 2022 # update annually 
 
 #Load data ----------------
 fishtkt <- read.csv(paste0('./data/Tanner_Detailed Fish Tickets_ALL_years_', cur_yr,'.csv'))
@@ -31,7 +31,9 @@ fishtkt <- read.csv(paste0('./data/Tanner_Detailed Fish Tickets_ALL_years_', cur
 #logbook <- read_excel(path = "./data/TannerLogbookData_2017.xlsx", sheet = 1)
 
 # moved to OceanAK ???? in 2021 therefore just have .csv with 2021 output. This will change in the future
-logbook <- read_excel(path = paste0('./data/Tanner crab_Invertebrate Logbook Data_', cur_yr, '.xlsx'), sheet = "AlexData")
+#logbook <- read_excel(path = paste0('./data/Tanner crab_Invertebrate Logbook Data_', cur_yr, '.xlsx'), sheet = "AlexData")
+logbook <- read.csv(paste0('./data/tanner_logbook_2020_', cur_yr,'.csv'))
+#logbook <- read_excel(path = paste0('./data/tanner_logbook_2020_', cur_yr,'.xlsx'), sheet = "tanner_logbook_2020_2022")
 statarea <- read.csv("./data/area_stat_areas.csv")
 logbook_all <- read_excel(path = "./data/All_logbook_tanner.xlsx", sheet = "AlexData") # from ALEX not in OCEAN AK
 # only goes to 2019
@@ -40,10 +42,11 @@ logbook_all <- read_excel(path = "./data/All_logbook_tanner.xlsx", sheet = "Alex
 
 ## current year ---------
 logbook %>% 
-  filter(YEAR >= 2020) %>% 
-  select(Year = YEAR, effort.date = EFFORT_DATE, District = DISTRICT, 
-                   Sub.district = SUB_DISTRICT, ADFG_NO, pots = NUMBER_POTS_LIFTED, 
-                   numbers = TARGET_SPECIES_RETAINED) %>% 
+  filter(Year >= 2020) %>% 
+  select(Year, effort.date = Entry.Date, District, 
+                   Sub.district, ADFG_NO = ADFG.Number, pots = Number.of.Pots.Lifted, 
+                   numbers = Target.Species.Retained) %>% 
+  mutate(effort.date = as.Date(effort.date, "%m/%d/%Y")) %>% 
   as.data.frame() -> logbook1 
 
 logbook1 %>% 
